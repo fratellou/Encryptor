@@ -1,0 +1,6 @@
+﻿  encryptors.cpp
+C:\Users\polum\programming\encryptor\encryptors.cpp(21,21): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Users\polum\programming\encryptor\encryptors.cpp(215,22): warning C4244: аргумент: преобразование "uint64_t" в "const int", возможна потеря данных
+C:\Users\polum\programming\encryptor\encryptors.cpp(302,31): warning C4267: +=: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\polum\programming\encryptor\encryptors.cpp(49): warning C4715: NOD: значение возвращается не при всех путях выполнения
+  encryptor.vcxproj -> C:\Users\polum\programming\encryptor\x64\Debug\encryptor.exe
