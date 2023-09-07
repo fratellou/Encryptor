@@ -1,15 +1,19 @@
-#pragma once
-#include <iostream>
+#ifndef DEC_HEAD_H
+#define DEC_HEAD_H
+
 #include <fstream>
+#include <iostream>
 #include <string>
 
 using namespace std;
 
-void decrypt(string& filename, string& login, string& password);	//Дешифрование
-string vig_cipher_decr(string& word, string& key, string& alphabet);   //Дешифровка Виженера
-void vigenere_decr(string& login, string& password, string& filename);    	//Построчная дешифровка файла методом Виженера
-void elgamal_decr(string& login, string& password, string& filename);     //Построчная шифровка файла методом Эль-Гамаля
-char elgamal_cipher_decr(uint64_t& p, uint64_t& a, uint64_t& C1, uint64_t& C2);  //Дешифровка Эль-Гамаля
-void atbash_decr(string& login, string& password, string& filename);    	//Построчная дешифровка файла методом Атбаш
-string atbash_cipher_decr_eng(string& ciphertext);    //Дешифрока Атбаш для английского алфавита
-string atbash_cipher_decr_rus(string& ciphertext);  //Дешифровка Атбаш для русского алфавита
+void decrypt(string &filename, string &login, string &password);
+string vig_cipher_decr(string &word, const string &key, const string &alphabet);
+void vigenere_decr(string &login, string &password, string &filename);
+void elgamal_decr(string &login, string &password, string &filename);
+char elgamal_cipher_decr(const uint64_t &p, const uint64_t &a,
+                         const uint64_t &C1, const uint64_t &C2);
+void atbash_decr(string &login, string &password, string &filename);
+string atbash_cipher_decr(const string &ciphertext);
+
+#endif

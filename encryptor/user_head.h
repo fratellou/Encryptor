@@ -1,20 +1,25 @@
-#pragma once
-#include <iostream>
-#include <fstream>
-#include <string>
-#include "windows.h"
-#include "user_head.h"
-#include "enc_head.h"
+#ifndef USER_HEAD_H
+#define USER_HEAD_H
+
 #include "dec_head.h"
+#include "enc_head.h"
+#include "user_head.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <unistd.h>
 using namespace std;
 
-string word_search(string& line, const uint64_t& number_of_word);     //Функция, которая возвращает необходимое по порядку слово из строки
-bool username_check(string& login);       //Функция, которая проверяет, занято ли имя при создании нового пользователя
-void password_check(string& password, string& login);    //Функция проверки пароля
-void data(string& login, string& password);  //Создание нового пользователя или вход в аккаунт существующего
-int users_files(string& login, string& password);	  //Выбор файла из имеющихся у пользователя или создание нового файла
-void add_file(string& login, string& password, string& filename);    //Добавление файла к списку файлов пользователя
-void create_file(string& login, string& password, string& filename);		//Функция создания нового файла
-bool file_check(string& filename);  //Функция, которая проверяет, существует ли файл с таким именем
-void printFile(string& login, string& password);		//Функция вывода файла
-void exit();     //Выход из программы
+string word_search(const string &line, const uint64_t &number_of_word);
+bool username_check(string &login);
+void password_check(string &password, const string &login);
+void data(string &login, string &password);
+int users_files(const string &login, const string &password);
+void add_file(const string &login, const string &password,
+              const string &filename);
+void create_file(const string &login, const string &password, string &filename);
+bool file_check(const string &filename);
+void printFile(const string &login, const string &password);
+void exit();
+
+#endif

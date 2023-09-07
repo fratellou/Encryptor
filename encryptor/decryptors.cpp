@@ -1,396 +1,303 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <cstdlib> 
-#include "windows.h"
 #include "dec_head.h"
-#include "user_head.h"
 #include "enc_head.h"
+#include "user_head.h"
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <unistd.h>
+#include <vector>
 using namespace std;
 
-
-string atbash_cipher_decr_eng(string& message)        //Дешифрока Атбаш для английского алфавита
+string atbash_cipher_decr(
+    const string &message) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
-    string text = "";     //Расшифрованное сообщение
-    for (char c : message)      //Посимвольный перебор текста
+  string text = ""; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+  for (char c : message) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+  {
+    if (isalpha(c)) //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     {
-        if (isalpha(c))     //Если символ входит в алфавит
-        {
-            if (isupper(c)) //Если буква заглавная
-            {
-                text += char('Z' - (c - 'A'));  //Вычисляем зеркальную букву
-            }
-            else        //Если буква строчная 
-            {
-                text += char('z' - (c - 'a'));  //Вычисляем зеркальную букву
-            }
-        }
-        else    //Иначе если символ не принадлежит алфавиту, то добавление в текст без дешифровки 
-        {
-            text += c;
-        }
+      if (isupper(c)) //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+      {
+        text += char('Z' - (c - 'A')); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+      } else //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+      {
+        text += char('z' - (c - 'a')); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+      }
+    } else //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
+           //пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    {
+      text += c;
     }
-    return text;   //Возвращение расшифрованного текста
+  }
+  return text; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 }
 
-string atbash_cipher_decr_rus(string& message)        //Дешифровка Атбаш для русского алфавита
+void atbash_decr(string &login, string &password,
+                 string &filename) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 {
-    string ciphered_text = "";     //Расшифрованное сообщение
-    for (char c : message)      //Посимвольный перебор текста
-    {
-        if (isalpha_ru(c))     //Если символ входит в алфавит
-        {
-            if (isalpha_ru(c) == 1) //Если буква заглавная и принадлежит русскому алфавиту
-            {
-                ciphered_text += char('Я' - (c - 'А'));  //Вычисляем зеркальную букву
-            }
-            else if (isalpha_ru(c) == 2)   //Если буква строчная и принадлежит русскому алфавиту
-            {
-                ciphered_text += char('я' - (c - 'а'));  //Вычисляем зеркальную букву
-            }
-            else {   //Иначе символ не принадлежит русскому алфавиту и добавление в текст без шифровки 
-                ciphered_text += c;
-            }
-        }
-        else    //Иначе если символ не принадлежит алфавиту, то добавление в текст без шифровки 
-        {
-            ciphered_text += c;
-        }
+  string new_file = filename + "_decrypted";
+  add_file(login, password, new_file);
+  new_file += ".txt";
+  filename += ".txt";
+  ofstream second_file;
+  second_file.open(new_file);
+
+  ifstream first_file;
+  first_file.open(filename);
+
+  string line;
+
+  if (first_file.is_open() && second_file.is_open()) {
+    while (getline(first_file, line)) {
+      string word = atbash_cipher_decr(line);
+      second_file << word;
     }
-    return ciphered_text;   //Возвращение дешифрованного текста
+    first_file.close();
+    second_file.close();
+  }
 }
 
-void atbash_decr(string& login, string& password, string& filename)    	//Построчная дешифровка файла методом Атбаш
+char elgamal_cipher_decr(const uint64_t &p, const uint64_t &a,
+                         const uint64_t &C1,
+                         const uint64_t &C2) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ
 {
-
-    cout << "Alphabet: 1.Eng 2.Ru" << endl;
-    cout << "Enter the alphabet number: ";
-    string alph_num;
-    cin >> alph_num;
-    while (true)
-    {
-        if (alph_num == "1")
-        {
-            string new_file = filename + "_decrypted";
-            add_file(login, password, new_file);
-            new_file += ".txt";
-            filename += ".txt";
-            ofstream second_file;    //Поток для записи файла
-            second_file.open(new_file);
-
-            ifstream first_file;        //Поток для чтения файла
-            first_file.open(filename);
-
-            string line;
-
-            if (first_file.is_open() && second_file.is_open())
-            {
-                while (getline(first_file, line))
-                {
-                    string word = atbash_cipher_decr_eng(line);
-                    second_file << word;
-                }
-                first_file.close();
-                second_file.close();
-            }
-            break;
-        }
-        else if (alph_num == "2")
-        {
-            string new_file = filename + "_decrypted";
-            add_file(login, password, new_file);
-            new_file += ".txt";
-            filename += ".txt";
-            ofstream second_file;    //Поток для записи файла
-            second_file.open(new_file);
-
-            ifstream first_file;        //Поток для чтения файла
-            first_file.open(filename);
-
-            string line;
-
-            if (first_file.is_open() && second_file.is_open())
-            {
-                while (getline(first_file, line))
-                {
-                    string word = atbash_cipher_decr_rus(line);
-                    second_file << word;
-                }
-                first_file.close();
-                second_file.close();
-            }
-            break;
-        }
-        else
-        {
-            cout << "Invalid input!" << endl;
-        }
-    }
+  uint64_t M = mod_p(C1, p - 1 - a, p);
+  M *= C2;
+  M %= p;
+  char letter = M;
+  return letter;
 }
 
-
-char elgamal_cipher_decr(uint64_t& p, uint64_t& a, uint64_t& C1, uint64_t& C2)  //Дешифровка Эль-Гамаля
+void elgamal_decr(
+    string &login, string &password,
+    string &filename) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ
 {
-    uint64_t M = mod_p(C1, p - 1 - a, p);
-    M *= C2;
-    M %= p;
-    char letter = M;
-    return letter;
+
+  string new_file = filename + "_decrypted"; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+  add_file(login, password, new_file);
+  new_file += ".txt";
+  filename += ".txt";
+  ofstream second_file; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+  second_file.open(new_file);
+
+  string line;
+  fstream app; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+  string keys;
+
+  app.open(filename);
+  if (app.is_open()) {
+    getline(app, keys);
+
+    string p_str = word_search(keys, 1);
+    string a_str = word_search(keys, 2);
+
+    char *end;
+    uint64_t p = strtoull(p_str.c_str(), &end, 10);
+    uint64_t a = strtoull(a_str.c_str(), &end, 10);
+
+    while (getline(app, line)) {
+      if (line != keys) {
+        string c1_str = word_search(line, 1);
+        string c2_str = word_search(line, 2);
+
+        uint64_t C1 = strtoull(c1_str.c_str(), &end, 10);
+        uint64_t C2 = strtoull(c2_str.c_str(), &end, 10);
+
+        char word = elgamal_cipher_decr(p, a, C1, C2); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        second_file << word;
+      }
+    }
+    second_file.close();
+    app.close();
+  }
+  users_files(login, password);
 }
 
-void elgamal_decr(string& login, string& password, string& filename)     //Построчная шифровка файла методом Эль-Гамаля
-{
-
-    string new_file = filename + "_decrypted";     //Создание нового файла
-    add_file(login, password, new_file);
-    new_file += ".txt";
-    filename += ".txt";
-    ofstream second_file;    //Поток для записи файла
-    second_file.open(new_file);
-
-    string line;
-    fstream app;       //Открытие потока для чтения файла
-    string keys;
-    
-    app.open(filename);
-    if (app.is_open())
-    {
-        getline(app, keys);
-
-        string p_str = word_search(keys, 1);
-        string a_str = word_search(keys, 2);
-
-        char* end;
-        uint64_t p = strtoull(p_str.c_str(), &end, 10);
-        uint64_t a = strtoull(a_str.c_str(), &end, 10);
-
-
-
-        while (getline(app, line))
-        {
-            if (line != keys)
-            {
-                string c1_str = word_search(line, 1);
-                string c2_str = word_search(line, 2);
-                
-                uint64_t C1 = strtoull(c1_str.c_str(), &end, 10);
-                uint64_t C2 = strtoull(c2_str.c_str(), &end, 10);
-                
-                char word = elgamal_cipher_decr(p, a, C1, C2);        //Зашифрованная строка
-                second_file << word;
-            }
-        }
-        second_file.close();
-        app.close();
+string vig_cipher_decr(string &word, const string &key,
+                       const string &alphabet) {
+  string new_key;
+  if (word.size() >= key.size()) {
+    int size = (word.size() / key.size());
+    int size_after = (word.size() % key.size());
+    for (int i = 0; i < size; i++) {
+      new_key = new_key + key;
     }
-    users_files(login, password);
+    for (int j = 0; j < size_after; j++) {
+      new_key = new_key + key[j];
+    }
+  }
+
+  else {
+    int word_size = word.size();
+    for (int s = 0; s < word_size; s++) {
+      new_key = new_key + key[s];
+    }
+  }
+
+  vector<int> A;
+  vector<int> B;
+  int word_size = word.size();
+  int alph_size = alphabet.size();
+  for (int k = 0; k < word_size; k++) {
+    for (int n = 0; n < alph_size; n++) //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    {
+      if (word[k] == alphabet[n]) {
+        A.push_back(n);
+      }
+
+      if (new_key[k] == alphabet[n]) {
+        B.push_back(n);
+      }
+    }
+  }
+
+  for (int u = 0; u < word_size; u++) {
+    int e = ((A[u] + B[u]) % alph_size);
+    word[u] = alphabet[e];
+  }
+  return word;
 }
 
-string vig_cipher_decr(string& word, string& key, string& alphabet)   //Дешифровка Виженера
+void vigenere_decr(
+    string &login, string &password,
+    string &filename) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
-    string new_key;   //Строка растягивания ключа по длине слова
-    if (word.size() >= key.size())      //Если длина вводимого слова больше, либо равна длине ключа
-    {
-        for (int i = 0; i < (word.size() / key.size()); i++)     //Записываем целое количество ключа. Растягивая ключ по длине слова.
-        {
-            new_key = new_key + key;
-        }
-        for (int j = 0; j < (word.size() % key.size()); j++)     //Записываем остаточные буквы от ключа
-        {
-            new_key = new_key + key[j];
-        }
-    }
 
-    else  //Иначе если ключ длиннее слова
-    {
-        for (int s = 0; s < word.size(); s++)       //Укорачиваем ключ до длины слова
-        {
-            new_key = new_key + key[s];
-        }
-    }
+  string new_file = filename + "_decrypted";
+  add_file(login, password, new_file);
+  new_file += ".txt";
+  filename += ".txt";
+  ofstream second_file; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
+  second_file.open(new_file);
 
-    vector<int> A;
-    vector<int> B;
-    for (int k = 0; k < word.size(); k++)
-    {
-        for (int n = 0; n < alphabet.size(); n++)   //Ищем пересечение букв
-        {
-            if (word[k] == alphabet[n])
-            {
-                A.push_back(n);
-            }
+  ifstream first_file; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+  first_file.open(filename);
+  string key_word; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+                   //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+  getline(first_file, key_word);
 
-            if (new_key[k] == alphabet[n])
-            {
-                B.push_back(n);
-            }
-        }
-    }
+  string alphabet =
+      "abcdefghijklmnopqrstuvwxyz "
+      "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.,!<>:';][{}+=_-)(*&^%$#@!"
+      "1234567890QWERTYUIOPLKJHGFDSAZXCVBNMпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
+  string line;
 
-    int e = 0; //Для суммы номеров символов. Чтобы при достижении количества всех букв, программа шла по кругу, начиная с первого номера
-    for (int u = 0; u < word.size(); u++)
-    {
-        e = ((A[u] + B[u]) % alphabet.size());
-        word[u] = alphabet[e];
+  if (first_file.is_open()) {
+    while (getline(first_file, line)) {
+      if (line != key_word) {
+        string word = vig_cipher_decr(line, key_word, alphabet);
+        second_file << word;
+      }
     }
-    return word;
+    second_file.close();
+    first_file.close();
+  }
+  users_files(login, password);
 }
 
+void decrypt(string &filename, string &login, string &password) {
+  string re_password;
+  cout << "Re-enter the password: ";
+  getline(cin, re_password);
+  password_encrypt(re_password);
+  if (password == re_password) {
+    system("clear");
+    if (users_files(login, password) == 1) {
+      cout << " ________________________________________________________\n";
+      cout << "|                       Decryption                       |\n";
+      cout << "|________________________________________________________|\n\n";
+      cout << "1. The Vigenere cipher\n";
+      cout << "2. ElGamal encryption\n";
+      cout << "3. Atbash cipher\n";
+      cout << "4. Return\n";
+      cout << "Enter the decryption number: ";
+      string number_of_decryption;
+      getline(cin, number_of_decryption);
 
-void vigenere_decr(string& login, string& password, string& filename)    	//Построчная дешифровка файла методом Виженера
-{
-
-    string new_file = filename + "_decrypted";
-    add_file(login, password, new_file);
-    new_file += ".txt";
-    filename += ".txt";
-    ofstream second_file;    //Поток для записи в файл
-    second_file.open(new_file);
-
-    ifstream first_file;     //Поток для чтения файла
-    first_file.open(filename);
-    string key_word;    //Ключевое слово, которое находится на первой строке зашифрованного файла
-    getline(first_file, key_word);
-
-    string alphabet = "abcdefghijklmnopqrstuvwxyz йцукенгшщзхъфывапролджэячсмитьбю.,!<>:';][{}+=_-)(*&^%$#@!1234567890QWERTYUIOPLKJHGFDSAZXCVBNMЙЦУКЕНГШЩЗХЪЭЖДЛОРПАВЫФЯЧСМИТЬБЮ";
-    string line;
-
-    
-    if (first_file.is_open())
-    {
-        while (getline(first_file, line))
-        {
-            if (line != key_word)
-            {
-                string word = vig_cipher_decr(line, key_word, alphabet);
-                second_file << word;
+      if (number_of_decryption == "1") {
+        cout << "Enter the file number to decrypt: ";
+        int number_of_file;
+        cin >> number_of_file;
+        ifstream stream;
+        string line;
+        stream.open("database.txt");
+        if (stream.is_open()) {
+          while (getline(stream, line)) {
+            if (word_search(line, 1) == login &&
+                word_search(line, 2) == password) {
+              filename = word_search(line, number_of_file + 2);
+              break;
             }
+          }
         }
-        second_file.close();
-        first_file.close();
-    }
-    users_files(login, password);
-}
+        stream.close();
+        vigenere_decr(login, password, filename);
+      }
 
-void decrypt(string& filename, string& login, string& password) 
-{
-    string re_password;
-    cout << "Re-enter the password: ";
-    getline(cin, re_password);
-    password_encrypt(re_password);
-    if (password == re_password)
-    {
-        system("cls");
-        if (users_files(login, password) == 1)
-        {
-            cout << " ________________________________________________________\n";
-            cout << "|                       Decryption                       |\n";
-            cout << "|________________________________________________________|\n\n";
-            cout << "1. The Vigenere cipher\n";
-            cout << "2. ElGamal encryption\n";
-            cout << "3. Atbash cipher\n";
-            cout << "4. Return\n";
-            cout << "Enter the decryption number: ";
-            string number_of_decryption;
-            getline(cin, number_of_decryption);
-
-            if (number_of_decryption == "1")
-            {
-                cout << "Enter the file number to decrypt: ";
-                int number_of_file;
-                cin >> number_of_file;
-                ifstream stream;
-                string line;
-                stream.open("database.txt");
-                if (stream.is_open())
-                {
-                    while (getline(stream, line))
-                    {
-                        if (word_search(line, 1) == login && word_search(line, 2) == password)
-                        {
-                            filename = word_search(line, number_of_file + 2);
-                            break;
-                        }
-                    }
-                }
-                stream.close();
-                vigenere_decr(login, password, filename);
+      else if (number_of_decryption == "2") {
+        cout << "Enter the file number to decrypt: ";
+        int number_of_file;
+        cin >> number_of_file;
+        ifstream stream;
+        string line;
+        stream.open("database.txt");
+        if (stream.is_open()) {
+          while (getline(stream, line)) {
+            if (word_search(line, 1) == login &&
+                word_search(line, 2) == password) {
+              filename = word_search(line, number_of_file + 2);
+              break;
             }
-
-            else if (number_of_decryption == "2")
-            {
-                cout << "Enter the file number to decrypt: ";
-                int number_of_file;
-                cin >> number_of_file;
-                ifstream stream;
-                string line;
-                stream.open("database.txt");
-                if (stream.is_open())
-                {
-                    while (getline(stream, line))
-                    {
-                        if (word_search(line, 1) == login && word_search(line, 2) == password)
-                        {
-                            filename = word_search(line, number_of_file + 2);
-                            break;
-                        }
-                    }
-                }
-                stream.close();
-                elgamal_decr(login, password, filename);
-            }
-
-            else if (number_of_decryption == "3")
-            {
-                cout << "Enter the file number to decrypt: ";
-                int number_of_file;
-                cin >> number_of_file;
-                ifstream stream;
-                string line;
-                stream.open("database.txt");
-                if (stream.is_open())
-                {
-                    while (getline(stream, line))
-                    {
-                        if (word_search(line, 1) == login && word_search(line, 2) == password)
-                        {
-                            filename = word_search(line, number_of_file + 2);
-                            break;
-                        }
-                    }
-                }
-                stream.close();
-                atbash_decr(login, password, filename);
-            }
-
-            else if (number_of_decryption == "4")
-            {
-                system("cls");
-                cout << " ________________________________________________________\n";
-                cout << "|                        Returning                       |\n";
-                cout << "|________________________________________________________|\n\n";
-                Sleep(300);
-                cout << "                        ";
-                for (int i = 0; i < 10; i++)
-                {
-                    cout << '.';
-                    Sleep(200);
-                }
-            }
-
-            
+          }
         }
+        stream.close();
+        elgamal_decr(login, password, filename);
+      }
 
-        else
-        {
-            cout << "You don't have any files to decrypt. First create a file." << endl;
-            Sleep(2000);
+      else if (number_of_decryption == "3") {
+        cout << "Enter the file number to decrypt: ";
+        int number_of_file;
+        cin >> number_of_file;
+        ifstream stream;
+        string line;
+        stream.open("database.txt");
+        if (stream.is_open()) {
+          while (getline(stream, line)) {
+            if (word_search(line, 1) == login &&
+                word_search(line, 2) == password) {
+              filename = word_search(line, number_of_file + 2);
+              break;
+            }
+          }
         }
+        stream.close();
+        atbash_decr(login, password, filename);
+      }
+
+      else if (number_of_decryption == "4") {
+        system("clear");
+        cout << " ________________________________________________________\n";
+        cout << "|                        Returning                       |\n";
+        cout
+            << "|________________________________________________________|\n\n";
+        sleep(300);
+        cout << "                        ";
+        for (int i = 0; i < 10; i++) {
+          cout << '.';
+          sleep(200);
+        }
+      }
+
     }
-    else
-    {
-        cout << "Wrong password!" << endl;
-        Sleep(2000);
+
+    else {
+      cout << "You don't have any files to decrypt. First create a file."
+           << endl;
+      sleep(2000);
     }
+  } else {
+    cout << "Wrong password!" << endl;
+    sleep(2000);
+  }
 }
