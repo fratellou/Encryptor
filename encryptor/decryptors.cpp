@@ -1,41 +1,36 @@
 #include "dec_head.h"
 #include "enc_head.h"
 #include "user_head.h"
+#include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <unistd.h>
 #include <vector>
 using namespace std;
 
-string atbash_cipher_decr(
-    const string &message) //��������� ����� ��� ����������� ��������
-{
-  string text = ""; //�������������� ���������
-  for (char c : message) //������������ ������� ������
-  {
-    if (isalpha(c)) //���� ������ ������ � �������
-    {
-      if (isupper(c)) //���� ����� ���������
-      {
-        text += char('Z' - (c - 'A')); //��������� ���������� �����
-      } else //���� ����� ��������
-      {
-        text += char('z' - (c - 'a')); //��������� ���������� �����
+string atbash_cipher_decr(const string &message) {
+  string text = "";
+  for (char c : message) {
+    if (isalpha(c)) {
+      if (isupper(c)) {
+        text += char('Z' - (c - 'A'));
+      } else {
+        text += char('z' - (c - 'a'));
       }
-    } else //����� ���� ������ �� ����������� ��������, �� ���������� � �����
-           //��� ����������
+    } else
+
     {
       text += c;
     }
   }
-  return text; //����������� ��������������� ������
+  return text;
 }
 
-void atbash_decr(string &login, string &password,
-                 string &filename) //���������� ���������� ����� ������� �����
-{
+void atbash_decr(const string &login, const string &password,
+                 string &filename) {
   string new_file = filename + "_decrypted";
   add_file(login, password, new_file);
   new_file += ".txt";
@@ -59,9 +54,7 @@ void atbash_decr(string &login, string &password,
 }
 
 char elgamal_cipher_decr(const uint64_t &p, const uint64_t &a,
-                         const uint64_t &C1,
-                         const uint64_t &C2) //���������� ���-������
-{
+                         const uint64_t &C1, const uint64_t &C2) {
   uint64_t M = mod_p(C1, p - 1 - a, p);
   M *= C2;
   M %= p;
@@ -69,20 +62,18 @@ char elgamal_cipher_decr(const uint64_t &p, const uint64_t &a,
   return letter;
 }
 
-void elgamal_decr(
-    string &login, string &password,
-    string &filename) //���������� �������� ����� ������� ���-������
-{
+void elgamal_decr(const string &login, const string &password,
+                  string &filename) {
 
-  string new_file = filename + "_decrypted"; //�������� ������ �����
+  string new_file = filename + "_decrypted";
   add_file(login, password, new_file);
   new_file += ".txt";
   filename += ".txt";
-  ofstream second_file; //����� ��� ������ �����
+  ofstream second_file;
   second_file.open(new_file);
 
   string line;
-  fstream app; //�������� ������ ��� ������ �����
+  fstream app;
   string keys;
 
   app.open(filename);
@@ -104,7 +95,7 @@ void elgamal_decr(
         uint64_t C1 = strtoull(c1_str.c_str(), &end, 10);
         uint64_t C2 = strtoull(c2_str.c_str(), &end, 10);
 
-        char word = elgamal_cipher_decr(p, a, C1, C2); //������������� ������
+        char word = elgamal_cipher_decr(p, a, C1, C2);
         second_file << word;
       }
     }
@@ -140,8 +131,7 @@ string vig_cipher_decr(string &word, const string &key,
   int word_size = word.size();
   int alph_size = alphabet.size();
   for (int k = 0; k < word_size; k++) {
-    for (int n = 0; n < alph_size; n++) //���� ����������� ����
-    {
+    for (int n = 0; n < alph_size; n++) {
       if (word[k] == alphabet[n]) {
         A.push_back(n);
       }
@@ -159,28 +149,25 @@ string vig_cipher_decr(string &word, const string &key,
   return word;
 }
 
-void vigenere_decr(
-    string &login, string &password,
-    string &filename) //���������� ���������� ����� ������� ��������
-{
+void vigenere_decr(const string &login, const string &password,
+                   string &filename) {
 
   string new_file = filename + "_decrypted";
   add_file(login, password, new_file);
   new_file += ".txt";
   filename += ".txt";
-  ofstream second_file; //����� ��� ������ � ����
+  ofstream second_file;
   second_file.open(new_file);
 
-  ifstream first_file; //����� ��� ������ �����
+  ifstream first_file;
   first_file.open(filename);
-  string key_word; //�������� �����, ������� ��������� �� ������ ������
-                   //�������������� �����
+  string key_word;
+
   getline(first_file, key_word);
 
   string alphabet =
       "abcdefghijklmnopqrstuvwxyz "
-      "��������������������������������.,!<>:';][{}+=_-)(*&^%$#@!"
-      "1234567890QWERTYUIOPLKJHGFDSAZXCVBNM��������������������������������";
+      ".,!<>:';][{}+=_-)(*&^%$#@!1234567890QWERTYUIOPLKJHGFDSAZXCVBNM";
   string line;
 
   if (first_file.is_open()) {
@@ -196,7 +183,7 @@ void vigenere_decr(
   users_files(login, password);
 }
 
-void decrypt(string &filename, string &login, string &password) {
+void decrypt(string &filename, const string &login, const string &password) {
   string re_password;
   cout << "Re-enter the password: ";
   getline(cin, re_password);
@@ -281,11 +268,11 @@ void decrypt(string &filename, string &login, string &password) {
         cout << "|                        Returning                       |\n";
         cout
             << "|________________________________________________________|\n\n";
-        sleep(300);
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
         cout << "                        ";
         for (int i = 0; i < 10; i++) {
           cout << '.';
-          sleep(200);
+          std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
       }
 
@@ -294,10 +281,10 @@ void decrypt(string &filename, string &login, string &password) {
     else {
       cout << "You don't have any files to decrypt. First create a file."
            << endl;
-      sleep(2000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
   } else {
     cout << "Wrong password!" << endl;
-    sleep(2000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   }
 }

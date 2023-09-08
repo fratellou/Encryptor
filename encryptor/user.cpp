@@ -1,8 +1,10 @@
 #include "enc_head.h"
 #include "user_head.h"
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <unistd.h>
 using namespace std;
 
@@ -30,10 +32,6 @@ bool username_check(string &login) {
 
     if (word_search(line, 1) == login) {
       cout << "That username is already taken. Enter a different username.\n";
-      username_check(login);
-    }
-    if (login == "" && login != " ") {
-      cout << "Username shouldn't be empty. Enter a different username.\n";
       username_check(login);
     }
   }
@@ -94,7 +92,7 @@ void data(string &login, string &password) {
 
       } else if (flag == false) {
         cout << "The user wasn't found.\n";
-        sleep(2000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         system("clear");
         data(login, password);
       }
@@ -117,7 +115,7 @@ void data(string &login, string &password) {
     }
   } else {
     cout << "Answer error. Please enter the correct answer to the question!\n";
-    sleep(2000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     system("clear");
     data(login, password);
   }
@@ -187,7 +185,7 @@ void create_file(const string &login, const string &password,
       break;
     } else {
       cout << "This filename is already taken!";
-      sleep(2000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
   }
 }
@@ -280,20 +278,20 @@ void printFile(const string &login, const string &password) {
         getline(file_to_read, line);
         for (char c : line) {
           cout << c;
-          sleep(100);
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         cout << endl;
       }
       file_to_read.close();
     }
-    sleep(3000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   } else {
     cout << " ________________________________________________________" << endl;
     cout << "|                        Printing                        |"
          << endl;
     cout << "|________________________________________________________|\n\n";
     cout << "You don't have any files to print. First create a file.";
-    sleep(2000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   }
 }
 
@@ -302,12 +300,6 @@ void exit() {
   cout << " ________________________________________________________" << endl;
   cout << "|                     Exiting program                    |" << endl;
   cout << "|________________________________________________________|\n\n";
-  sleep(300);
-  cout << "                        ";
-  for (int i = 0; i < 10; i++) {
-    cout << '.';
-    sleep(200);
-  }
 
   system("clear");
   cout << " ________________________________________________________" << endl;
@@ -321,19 +313,18 @@ void exit() {
       cout << "\t\t\t\t";
       for (char c : line) {
         cout << c;
-        sleep(20);
       }
       cout << endl;
     }
     cat.close();
   }
-  sleep(500);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   system("clear");
   cout << " ________________________________________________________" << endl;
   cout << "|                     Exiting program                    |" << endl;
   cout << "|________________________________________________________|\n\n";
-  sleep(300);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   ifstream cat2("cat.txt");
   if (cat2.is_open()) {
@@ -343,12 +334,12 @@ void exit() {
     }
     cat2.close();
   }
-  sleep(500);
+  std::this_thread::sleep_for(std::chrono::milliseconds(600));
   system("clear");
   cout << " ________________________________________________________" << endl;
   cout << "|                     Exiting program                    |" << endl;
   cout << "|________________________________________________________|\n\n";
-  sleep(300);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   ifstream cat3("cat.txt");
   if (cat3.is_open()) {
@@ -359,9 +350,9 @@ void exit() {
     cat3.close();
   }
   cout << endl;
-  sleep(500);
+  std::this_thread::sleep_for(std::chrono::milliseconds(600));
   cout << " ________________________________________________________" << endl;
   cout << "|                            Bye!                        |" << endl;
   cout << "|________________________________________________________|\n\n";
-  sleep(500);
+  std::this_thread::sleep_for(std::chrono::milliseconds(600));
 }

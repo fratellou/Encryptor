@@ -1,20 +1,21 @@
 ﻿#include "user_head.h"
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <unistd.h>
 using namespace std;
 
 int main() {
   string filename, password, login;
   string choice;
-  data(login, password); //Проверка пользователя или регистрация
+  data(login, password);
 
-  ofstream file("database.txt",
-                ios::ate | ios::app); //Открытие потока для чтения файла
+  ofstream file("database.txt", ios::ate | ios::app);
   do {
-    system("clear");              //Очистка консоли
-    users_files(login, password); //Вывод файлов пользователя
+    system("clear");
+    users_files(login, password);
     cout << " ________________________________________________________" << endl;
     cout << "|                          Menu                          |"
          << endl;
@@ -25,25 +26,24 @@ int main() {
     cout << "4. Print file\n";
     cout << "5. Exit\n";
     cout << "Enter choice: ";
-    getline(cin, choice); //Выбор действия
+    cin.clear();
+    getline(cin, choice);
     cout << endl;
     if (choice == "1") {
-      create_file(login, password, filename); //Создание нового файла
+      create_file(login, password, filename);
     } else if (choice == "2") {
-      encrypt(filename, password, login); //Шифровка файла
+      encrypt(filename, password, login);
     } else if (choice == "3") {
-      decrypt(filename, login, password); //Дешифровка файла
+      decrypt(filename, login, password);
     } else if (choice == "4") {
-      printFile(login, password); //Вывод содержимого файла в консоль
+      printFile(login, password);
     } else if (choice == "5") {
-      exit(); //Завершение работы кода
-    } else    //Ошибка ввода выбора действия
-    {
+      exit();
+    } else {
       cout << "Invalid input!" << endl;
-      sleep(2000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
-  } while (choice !=
-           "5"); //Работа программы, пока пользователем не будет совершен выход
+  } while (choice != "5");
 
   return 0;
 }

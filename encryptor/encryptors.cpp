@@ -1,30 +1,29 @@
 #include "enc_head.h"
 #include "user_head.h"
+#include <chrono>
 #include <cmath>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <unistd.h>
 #include <vector>
 using namespace std;
 
-bool is_Prime(const int &n) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+bool is_Prime(const int &n) {
 
-  int square_root = sqrt(n); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  int square_root = sqrt(n);
   int toggle = 1;
-  for (int i = 2; i <= square_root; i++) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 2 ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-  {
-    if (n % i == 0) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    {
-      toggle = 0; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 0
+  for (int i = 2; i <= square_root; i++) {
+    if (n % i == 0) {
+      toggle = 0;
       break;
     }
   }
   if (toggle)
-    return true; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+    return true;
   else
-    return false; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ false ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    return false;
 }
 
 uint64_t NOD(const uint64_t &a, const uint64_t &b) {
@@ -37,9 +36,7 @@ uint64_t NOD(const uint64_t &a, const uint64_t &b) {
   return 0;
 }
 
-uint64_t mod_p(const uint64_t &a, const uint64_t &x,
-               const uint64_t &p) // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+uint64_t mod_p(const uint64_t &a, const uint64_t &x, const uint64_t &p) {
   uint64_t res = 1;
   for (uint64_t i = 1; i <= x; i++) {
     res = res * a;
@@ -48,42 +45,33 @@ uint64_t mod_p(const uint64_t &a, const uint64_t &x,
   return res;
 }
 
-string
-atbash_cipher(const string &message) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
-  string ciphered_text = ""; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  for (char c : message) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  {
-    if (isalpha(c)) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    {
-      if (isupper(c)) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-      {
-        ciphered_text += char('Z' - (c - 'A')); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-      } else //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-      {
-        ciphered_text += char('z' - (c - 'a')); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+string atbash_cipher(const string &message) {
+  string ciphered_text = "";
+  for (char c : message) {
+    if (isalpha(c)) {
+      if (isupper(c)) {
+        ciphered_text += char('Z' - (c - 'A'));
+      } else {
+        ciphered_text += char('z' - (c - 'a'));
       }
-    } else //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-           //ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-    {
+    } else {
       ciphered_text += c;
     }
   }
-  return ciphered_text; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  return ciphered_text;
 }
 
-void atbash_encr(string &login, string &password,
-                 string &filename) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+void atbash_encr(const string &login, const string &password,
+                 string &filename) {
 
   string new_file = "atb_encr_" + filename;
   add_file(login, password, new_file);
   new_file += ".txt";
   filename += ".txt";
-  ofstream second_file; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  ofstream second_file;
   second_file.open(new_file);
 
-  ifstream first_file; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  ifstream first_file;
   first_file.open(filename);
 
   string line;
@@ -98,43 +86,35 @@ void atbash_encr(string &login, string &password,
   }
 }
 
-string elgamal_cipher(uint64_t &p, uint64_t &g, uint64_t &h,
-                      string &message) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+string elgamal_cipher(uint64_t &p, uint64_t &g, uint64_t &h, string &message) {
   string encr_message;
 
-  for (char i : message) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-  {
-    uint64_t m =
-        (uint8_t)i; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ASCII
-    uint64_t k = 2; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½, 1 < k < p-1 ï¿½ ï¿½ï¿½ï¿½(k, p-1) = 1
+  for (char i : message) {
+    uint64_t m = (uint8_t)i;
+    uint64_t k = 2;
     while (NOD(k, p - 1) != 1) {
       k++;
     }
-    uint64_t C1 = mod_p(g, k, p); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ C
-    uint64_t C2 =
-        (mod_p(h, k, p) * m) % p; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ C
+    uint64_t C1 = mod_p(g, k, p);
+    uint64_t C2 = (mod_p(h, k, p) * m) % p;
     encr_message += to_string(C1) + " " + to_string(C2) + "\n";
   }
   return encr_message;
 }
 
-void elgamal_encr(
-    string &login, string &password,
-    string &filename) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+void elgamal_encr(const string &login, const string &password,
+                  string &filename) {
 
-  string new_file = "elgam_encr_" + filename; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  string new_file = "elgam_encr_" + filename;
   add_file(login, password, new_file);
   new_file += ".txt";
   filename += ".txt";
-  ofstream second_file; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  ofstream second_file;
   second_file.open(new_file);
 
   uint64_t p, g, a;
 
-  while (true) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ p
-  {
+  while (true) {
     cout << "Enter a simple number p: ";
     cin >> p;
     if (is_Prime(p) == true)
@@ -144,8 +124,7 @@ void elgamal_encr(
   }
   second_file << p << " ";
 
-  while (true) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ g
-  {
+  while (true) {
     cout << "Enter a integer g (g < p and gcd(g, p) = 1): ";
     cin >> g;
     if (NOD(p, g) == 1 && g < p)
@@ -164,14 +143,14 @@ void elgamal_encr(
   }
   second_file << a << endl;
 
-  uint64_t h = mod_p(g, a, p); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ h
+  uint64_t h = mod_p(g, a, p);
 
   string line;
-  ifstream app; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  ifstream app;
   app.open(filename);
   if (app.is_open()) {
     while (getline(app, line)) {
-      string word = elgamal_cipher(p, g, h, line); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+      string word = elgamal_cipher(p, g, h, line);
       second_file << word;
     }
     second_file.close();
@@ -179,32 +158,23 @@ void elgamal_encr(
   }
 }
 
-string vig_cipher(string &word, const string &key,
-                  const string &alphabet) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+string vig_cipher(string &word, const string &key, const string &alphabet) {
   string new_key;
   int word_size = word.size();
   int key_size = key.size();
-  if (word_size >=
-      key_size) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-  {
-    for (int i = 0; i < (word_size / key_size);
-         i++) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-              //ï¿½ï¿½ï¿½ï¿½ï¿½.
+  if (word_size >= key_size) {
+    for (int i = 0; i < (word_size / key_size); i++)
+
     {
       new_key = new_key + key;
     }
-    for (int j = 0; j < (word_size % key_size);
-         j++) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-    {
+    for (int j = 0; j < (word_size % key_size); j++) {
       new_key = new_key + key[j];
     }
   }
 
-  else //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-  {
-    for (int s = 0; s < word_size; s++) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
-    {
+  else {
+    for (int s = 0; s < word_size; s++) {
       new_key = new_key + key[s];
     }
   }
@@ -213,8 +183,7 @@ string vig_cipher(string &word, const string &key,
   vector<int> B;
   int alph_size = alphabet.size();
   for (int k = 0; k < word_size; k++) {
-    for (int n = 0; n < alph_size; n++) //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-    {
+    for (int n = 0; n < alph_size; n++) {
       if (word[k] == alphabet[n]) {
         A.push_back(n);
       }
@@ -234,16 +203,14 @@ string vig_cipher(string &word, const string &key,
   return word;
 }
 
-void vigenere_encr(
-    string &login, string &password,
-    string &filename) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+void vigenere_encr(const string &login, const string &password,
+                   string &filename) {
 
   string new_file = "vig_encr_" + filename;
   add_file(login, password, new_file);
   new_file += ".txt";
   filename += ".txt";
-  ofstream second_file; //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+  ofstream second_file;
   second_file.open(new_file);
 
   string key_word;
@@ -253,8 +220,7 @@ void vigenere_encr(
 
   string alphabet =
       "abcdefghijklmnopqrstuvwxyz "
-      "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.,!<>:';][{}+=_-)(*&^%$#@!"
-      "1234567890QWERTYUIOPLKJHGFDSAZXCVBNMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
+      ".,!<>:';][{}+=_-)(*&^%$#@!1234567890QWERTYUIOPLKJHGFDSAZXCVBNM";
   string line;
 
   ifstream app;
@@ -269,9 +235,10 @@ void vigenere_encr(
   }
 }
 
-void encrypt(string &filename, string &password, string &login) {
+void encrypt(string &filename, const string &password, const string &login) {
   string re_password;
   cout << "Re-enter the password: ";
+  cin.clear();
   getline(cin, re_password);
   password_encrypt(re_password);
   if (password == re_password) {
@@ -285,6 +252,7 @@ void encrypt(string &filename, string &password, string &login) {
       cout << "3. Atbash cipher\n";
       cout << "4. Return\n";
       cout << "Enter the encryption number: ";
+      cin.clear();
       string number_of_encryption;
       getline(cin, number_of_encryption);
 
@@ -354,33 +322,32 @@ void encrypt(string &filename, string &password, string &login) {
         cout << "|                        Returning                       |\n";
         cout
             << "|________________________________________________________|\n\n";
-        sleep(300);
+        std::this_thread::sleep_for(std::chrono::milliseconds(300));
         cout << "                        ";
         for (int i = 0; i < 10; i++) {
           cout << '.';
-          sleep(200);
+          std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
       }
 
       else {
         cout << "Invalid input" << endl;
-        sleep(2000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(2000));
       }
     }
 
     else {
       cout << "You don't have any files to encrypt. First create a file."
            << endl;
-      sleep(2000);
+      std::this_thread::sleep_for(std::chrono::milliseconds(2000));
     }
   } else {
     cout << "Wrong password!";
-    sleep(2000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
   }
 }
 
-void password_encrypt(string &password) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+void password_encrypt(string &password) {
   string encrypted_password;
   for (char c : password) {
     int encr_char = (int(c) + 10);
@@ -389,8 +356,7 @@ void password_encrypt(string &password) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï
   password = encrypted_password;
 }
 
-void login_encrypt(string &login) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-{
+void login_encrypt(string &login) {
   string encrypted_password;
   for (char c : login) {
     int encr_char = (int(c) - 10);
