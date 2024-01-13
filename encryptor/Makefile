@@ -5,16 +5,16 @@ all:build
 build: decryptors.o encryptor.o encryptors.o user.o
 	g++ $(CFLAGS) decryptors.o encryptor.o encryptors.o user.o -o encryptor
 
-decryptors.o: dec_head.h user_head.h enc_head.h decryptors.cpp user.cpp encryptors.cpp 
+decryptors.o: 
 	g++ $(CFLAGS) -c decryptors.cpp
 
-encryptor.o: encryptor.cpp user_head.h user.cpp
+encryptor.o: 
 	g++ $(CFLAGS) -c encryptor.cpp
 
-encryptors.o: enc_head.h user_head.h encryptors.cpp user.cpp
+encryptors.o: 
 	g++ $(CFLAGS) -c encryptors.cpp
 
-user.o: user_head.h enc_head.h user.cpp user.cpp encryptors.cpp 
+user.o: 
 	g++ $(CFLAGS) -c user.cpp
 
 clean: 
